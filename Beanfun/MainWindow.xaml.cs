@@ -587,8 +587,8 @@ namespace Beanfun
 
                 string res = Encoding.UTF8.GetString(wc.DownloadData("https://" + App.LoginRegion.ToLower() + ".beanfun.com/beanfun_block/generic_handlers/get_service_ini.ashx"));
 
-                StringIniParser sip = new StringIniParser();
-                INIData = sip.ParseString(res);
+                IniParser.Parser.IniDataParser ip = new IniParser.Parser.IniDataParser();
+                INIData = ip.Parse(res);
 
                 res = Encoding.UTF8.GetString(wc.DownloadData("https://" + App.LoginRegion.ToLower() + ".beanfun.com/game_zone/"));
                 Regex reg = new Regex("Services.ServiceList = (.*);");
