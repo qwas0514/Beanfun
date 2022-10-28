@@ -1565,25 +1565,11 @@ namespace Beanfun
                         {
                             hWnd = WindowsAPI.FindWindow("MapleStoryClassTW", null);
                         }
-                        if ((bool)accountList.autoPaste.IsChecked && accountList.autoPaste.Visibility == Visibility.Visible)
+                        if ((bool)accountList.autoPaste.IsChecked && accountList.autoPaste.Visibility == Visibility.Visible && hWnd != IntPtr.Zero)
                         {
-                            if (hWnd == IntPtr.Zero)
-                            {
-                                try
-                                {
-                                    Clipboard.SetText(accountList.t_Password.Text);
-                                    MessageBox.Show(TryFindResource("GetOtpSuccessAndCopy") as string);
-                                }
-                                catch { }
-                            }
-                            else
-                            {
                                 double dpixRatio = 1.0;
-                                if (hWnd != IntPtr.Zero)
-                                {
-                                    System.Drawing.Graphics currentGraphics = System.Drawing.Graphics.FromHwnd(hWnd);
-                                    dpixRatio = currentGraphics.DpiX / 96.0;
-                                }
+                                System.Drawing.Graphics currentGraphics = System.Drawing.Graphics.FromHwnd(hWnd);
+                                dpixRatio = currentGraphics.DpiX / 96.0;
 
                                 const int WM_KEYDOWN = 0X100;
                                 const int WM_LBUTTONDOWN = 0x0201;
@@ -1631,8 +1617,13 @@ namespace Beanfun
                                 WindowsAPI.PostString(hWnd, accountList.t_Password.Text);
                                 // 按登入
                                 WindowsAPI.PostKey(hWnd, WM_KEYDOWN, VK_ENTER);
-                            }
+                    } else {
+                        try
+                        {
+                            Clipboard.SetText(accountList.t_Password.Text);
+                            MessageBox.Show(TryFindResource("GetOtpSuccessAndCopy") as string);
                         }
+                        catch { }
                     }
                 }
             }
