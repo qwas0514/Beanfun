@@ -1565,8 +1565,9 @@ namespace Beanfun
                         {
                             hWnd = WindowsAPI.FindWindow("MapleStoryClassTW", null);
                         }
-                        if ((bool)accountList.autoPaste.IsChecked && accountList.autoPaste.Visibility == Visibility.Visible && hWnd != IntPtr.Zero)
-                        {
+                        if (accountList.autoPaste.Visibility == Visibility.Visible) {
+                            if ((bool)accountList.autoPaste.IsChecked && hWnd != IntPtr.Zero)
+                            {
                                 double dpixRatio = 1.0;
                                 System.Drawing.Graphics currentGraphics = System.Drawing.Graphics.FromHwnd(hWnd);
                                 dpixRatio = currentGraphics.DpiX / 96.0;
@@ -1617,13 +1618,14 @@ namespace Beanfun
                                 WindowsAPI.PostString(hWnd, accountList.t_Password.Text);
                                 // 按登入
                                 WindowsAPI.PostKey(hWnd, WM_KEYDOWN, VK_ENTER);
-                    } else {
-                        try
-                        {
-                            Clipboard.SetText(accountList.t_Password.Text);
-                            MessageBox.Show(TryFindResource("GetOtpSuccessAndCopy") as string);
+                        } else {
+                            try
+                            {
+                                Clipboard.SetText(accountList.t_Password.Text);
+                                MessageBox.Show(TryFindResource("GetOtpSuccessAndCopy") as string);
+                            }
+                            catch { }
                         }
-                        catch { }
                     }
                 }
             }
