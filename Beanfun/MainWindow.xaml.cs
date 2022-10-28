@@ -1552,7 +1552,6 @@ namespace Beanfun
                     int accIndex = accountList.list_Account.SelectedIndex;
                     string acc = this.bfClient.accountList[index].sid;
                     accountList.t_Password.Text = this.otp;
-                    
 
                     if (!(bool)settingPage.tradLogin.IsChecked && login_action_type == 1)
                     {
@@ -1565,25 +1564,13 @@ namespace Beanfun
                         {
                             hWnd = WindowsAPI.FindWindow("MapleStoryClassTW", null);
                         }
-                        if ((bool)accountList.autoPaste.IsChecked && accountList.autoPaste.Visibility == Visibility.Visible)
+                        if (accountList.autoPaste.Visibility == Visibility.Visible)
                         {
-                            if (hWnd == IntPtr.Zero)
-                            {
-                                try
-                                {
-                                    Clipboard.SetText(accountList.t_Password.Text);
-                                    MessageBox.Show(TryFindResource("GetOtpSuccessAndCopy") as string);
-                                }
-                                catch { }
-                            }
-                            else
+                            if ((bool)accountList.autoPaste.IsChecked && hWnd != IntPtr.Zero)
                             {
                                 double dpixRatio = 1.0;
-                                if (hWnd != IntPtr.Zero)
-                                {
-                                    System.Drawing.Graphics currentGraphics = System.Drawing.Graphics.FromHwnd(hWnd);
-                                    dpixRatio = currentGraphics.DpiX / 96.0;
-                                }
+                                System.Drawing.Graphics currentGraphics = System.Drawing.Graphics.FromHwnd(hWnd);
+                                dpixRatio = currentGraphics.DpiX / 96.0;
 
                                 const int WM_KEYDOWN = 0X100;
                                 const int WM_LBUTTONDOWN = 0x0201;
@@ -1594,7 +1581,7 @@ namespace Beanfun
                                 const byte VK_END = 0x0023;
                                 WindowsAPI.SetForegroundWindow(hWnd);
                                 Thread.Sleep(100);
-                                if  ("610074".Equals(service_code) && "T9".Equals(service_region))
+                                if ("610074".Equals(service_code) && "T9".Equals(service_region))
                                 {
                                     // 按下ESC關閉提示框
                                     WindowsAPI.PostKey(hWnd, WM_KEYDOWN, VK_ESCAPE);
@@ -1631,28 +1618,35 @@ namespace Beanfun
                                 WindowsAPI.PostString(hWnd, accountList.t_Password.Text);
                                 // 按登入
                                 WindowsAPI.PostKey(hWnd, WM_KEYDOWN, VK_ENTER);
+                            } else {
+                                try
+                                {
+                                    Clipboard.SetText(accountList.t_Password.Text);
+                                    MessageBox.Show(TryFindResource("GetOtpSuccessAndCopy") as string);
+                                }
+                                catch { }
                             }
                         }
                     }
                 }
+
+                Console.WriteLine("getOtpWorker end");
+
+                accountList.list_Account.IsEnabled = true;
+                accountList.btnGetOtp.IsEnabled = true;
+                accountList.btn_Logout.IsEnabled = true;
+                accountList.btn_ChangeGame.IsEnabled = true;
+                accountList.gameName.IsEnabled = true;
+                accountList.btn_StartGame.IsEnabled = true;
+                accountList.m_MenuList.IsEnabled = true;
+                if (this.bfClient.accountAmountLimitNotice != "")
+                    accountList.btnAddServiceAccount.IsEnabled = this.bfClient.accountList.Count < int.Parse(this.bfClient.accountAmountLimitNotice.Substring(this.bfClient.accountAmountLimitNotice.Length - 1, 1));
+
+                //if (!this.pingWorker.IsBusy)  this.pingWorker.RunWorkerAsync();
+                //this.pingWorker.RunWorkerAsync();
+
             }
-
-            Console.WriteLine("getOtpWorker end");
-
-            accountList.list_Account.IsEnabled = true;
-            accountList.btnGetOtp.IsEnabled = true;
-            accountList.btn_Logout.IsEnabled = true;
-            accountList.btn_ChangeGame.IsEnabled = true;
-            accountList.gameName.IsEnabled = true;
-            accountList.btn_StartGame.IsEnabled = true;
-            accountList.m_MenuList.IsEnabled = true;
-            if (this.bfClient.accountAmountLimitNotice != "")
-                accountList.btnAddServiceAccount.IsEnabled = this.bfClient.accountList.Count < int.Parse(this.bfClient.accountAmountLimitNotice.Substring(this.bfClient.accountAmountLimitNotice.Length - 1, 1));
-
-            //if (!this.pingWorker.IsBusy)  this.pingWorker.RunWorkerAsync();
-            //this.pingWorker.RunWorkerAsync();
-
-            }
+        }
 
         // Ping to Beanfun website.
         private void pingWorker_DoWork(object sender, DoWorkEventArgs e)
